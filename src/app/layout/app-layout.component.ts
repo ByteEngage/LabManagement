@@ -11,6 +11,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
+import { isPlatformBrowser } from '@angular/common';
 interface NavItem {
   label: string;
   icon: string; // key into the ICONS map used in the template
@@ -30,6 +31,7 @@ interface NavSection {
   templateUrl: './app-layout.component.html',
   styleUrls: ['./app-layout.component.scss'],
 })
+
 export class AppShellComponent implements OnInit {
   private host = inject(ElementRef<HTMLElement>);
   private router = inject(Router);
@@ -151,4 +153,6 @@ export class AppShellComponent implements OnInit {
       this.userMenuOpen.set(false);
     }
   }
+  
 }
+
