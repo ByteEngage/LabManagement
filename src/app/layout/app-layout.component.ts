@@ -50,10 +50,10 @@ export class AppShellComponent implements OnInit {
   sidebarWidth = computed(() => (this.sidebarCollapsed() ? '76px' : '264px'));
 
   currentUser = {
-    name: 'Adrienne Calloway',
+    name: 'Harshit Pandey',
     role: 'Product Operations Lead',
-    email: 'adrienne.calloway@company.com',
-    initials: 'AC',
+    email: 'harshit.pandey@company.com',
+    initials: 'HP',
   };
 
   navSections: NavSection[] = [
