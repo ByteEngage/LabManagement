@@ -1,0 +1,125 @@
+<div class="shell" [class.collapsed]="sidebarCollapsed()">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside
+    class="sidebar"
+    [class.collapsed]="sidebarCollapsed()"
+    [class.mobile-open]="mobileSidebarOpen()"
+  >
+    <div class="sidebar__brand">
+      <div class="brand-mark">AV</div>
+      <span class="brand-name" *ngIf="!sidebarCollapsed()">Aurelia</span>
+    </div>
+
+    <nav class="sidebar__nav">
+      <div class="nav-section" *ngFor="let section of navSections">
+        <p class="nav-section__title" *ngIf="!sidebarCollapsed()">
+          {{ section.title }}
+        </p>
+        <a
+          class="nav-item"
+          *ngFor="let item of section.items"
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          [class.active]="activeRoute() === item.route"
+          [attr.title]="sidebarCollapsed() ? item.label : null"
+          (click)="setActive(item.route)"
+        >
+          <span class="nav-item__icon" [ngSwitch]="item.icon">
+            <svg *ngSwitchCase="'grid'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+            <svg *ngSwitchCase="'bar-chart'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7" stroke-linecap="round"/></svg>
+            <svg *ngSwitchCase="'folder'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/></svg>
+            <svg *ngSwitchCase="'users'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c.8-3.4 3.4-5.4 6.5-5.4s5.7 2 6.5 5.4" stroke-linecap="round"/><path d="M16.5 6.6a3.2 3.2 0 0 1 0 6.3M21 20c-.6-2.6-2-4.4-4.1-5.2" stroke-linecap="round"/></svg>
+            <svg *ngSwitchCase="'message'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v11H8l-4 4V5Z" stroke-linejoin="round"/></svg>
+            <svg *ngSwitchCase="'file'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h8l5 5v13H6V3Z" stroke-linejoin="round"/><path d="M14 3v5h5" stroke-linejoin="round"/></svg>
+            <svg *ngSwitchCase="'settings'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2-1.5-2-3.4-2.3.9a7.7 7.7 0 0 0-1.8-1L15 3h-4l-.3 2.4a7.7 7.7 0 0 0-1.8 1.1L6.6 5.6l-2 3.4L6.6 11a7.6 7.6 0 0 0 0 2l-2 1.6 2 3.4 2.3-.9c.5.5 1.1.8 1.8 1.1L11 21h4l.3-2.4c.7-.3 1.3-.6 1.8-1.1l2.3.9 2-3.4-2-1.6Z" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="nav-item__label" *ngIf="!sidebarCollapsed()">{{ item.label }}</span>
+          <span class="nav-item__badge" *ngIf="item.badge && !sidebarCollapsed()">{{ item.badge }}</span>
+        </a>
+      </div>
+    </nav>
+
+    <button class="sidebar__collapse-btn" (click)="toggleSidebar()" aria-label="Collapse sidebar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" [class.flipped]="sidebarCollapsed()">
+        <path d="M15 5 8 12l7 7" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span *ngIf="!sidebarCollapsed()">Collapse</span>
+    </button>
+  </aside>
+
+  <div class="sidebar-scrim" *ngIf="mobileSidebarOpen()" (click)="closeMobileSidebar()"></div>
+
+  <!-- ============ MAIN COLUMN ============ -->
+  <div class="main">
+
+    <!-- ============ TOPBAR ============ -->
+    <header class="topbar">
+      <div class="topbar__left">
+        
+        <button class="icon-btn hide-mobile" (click)="toggleSidebar()" aria-label="Toggle sidebar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16" stroke-linecap="round"/></svg>
+        </button>
+
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3" stroke-linecap="round"/></svg>
+          <input type="text" placeholder="Search projects, people, files…" />
+          <kbd>⌘K</kbd>
+        </div>
+      </div>
+
+      <div class="topbar__right">
+        <button class="icon-btn" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          <span class="dot"></span>
+        </button>
+
+        <button class="icon-btn" (click)="toggleFullscreen()" [attr.aria-label]="isFullscreen() ? 'Exit fullscreen' : 'Enter fullscreen'">
+          <svg *ngIf="!isFullscreen()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg *ngIf="isFullscreen()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+
+        <button class="icon-btn theme-toggle" (click)="toggleTheme()" aria-label="Toggle theme">
+          <svg *ngIf="!darkMode()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2M12 19.5v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M2.5 12h2M19.5 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" stroke-linecap="round"/></svg>
+          <svg *ngIf="darkMode()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.5 14.5A8.5 8.5 0 1 1 9.5 3.5a7 7 0 0 0 11 11Z" stroke-linejoin="round"/></svg>
+        </button>
+
+        <div class="divider"></div>
+
+        <div class="user-menu">
+          <button class="user-menu__trigger" (click)="toggleUserMenu()">
+            <span class="avatar">{{ currentUser.initials }}</span>
+            <span class="user-info hide-mobile">
+              <span class="user-info__name">{{ currentUser.name }}</span>
+              <span class="user-info__role">{{ currentUser.role }}</span>
+            </span>
+            <svg class="chevron" [class.open]="userMenuOpen()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+
+          <div class="user-menu__dropdown" *ngIf="userMenuOpen()">
+            <div class="dropdown__header">
+              <span class="avatar avatar--lg">{{ currentUser.initials }}</span>
+              <div>
+                <p class="dropdown__name">{{ currentUser.name }}</p>
+                <p class="dropdown__email">{{ currentUser.email }}</p>
+              </div>
+            </div>
+            <a class="dropdown__item">Your profile</a>
+            <a class="dropdown__item">Account settings</a>
+            <a class="dropdown__item">Billing</a>
+            <div class="dropdown__sep"></div>
+            <a class="dropdown__item dropdown__item--danger">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17l5-5-5-5M21 12H9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Sign out
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============ PAGE CONTENT ============ -->
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

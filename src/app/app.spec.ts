@@ -16,10 +16,14 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render the login page', async () => {
+  it('should render the sidebar toggle and mode controls', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.textContent).toContain('Welcome back');
+
+    expect(compiled.textContent).toContain('Dashboard');
+    expect(compiled.querySelector('[aria-label="Toggle sidebar"]')).not.toBeNull();
+    expect(compiled.querySelector('[aria-label="Toggle theme"]')).not.toBeNull();
+    expect(compiled.querySelector('[aria-label="Toggle fullscreen"]')).not.toBeNull();
   });
 });
