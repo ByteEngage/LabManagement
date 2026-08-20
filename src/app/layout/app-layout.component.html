@@ -21,9 +21,8 @@
           *ngFor="let item of section.items"
           [routerLink]="item.route"
           routerLinkActive="active"
-          [class.active]="activeRoute() === item.route"
           [attr.title]="sidebarCollapsed() ? item.label : null"
-          (click)="setActive(item.route)"
+          (click)="onNavClick()"
         >
           <span class="nav-item__icon" [ngSwitch]="item.icon">
             <svg *ngSwitchCase="'grid'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
@@ -56,9 +55,14 @@
     <!-- ============ TOPBAR ============ -->
     <header class="topbar">
       <div class="topbar__left">
-        
-        <button class="icon-btn hide-mobile" (click)="toggleSidebar()" aria-label="Toggle sidebar">
+
+        <button class="icon-btn desktop-sidebar-toggle" (click)="toggleSidebar()" aria-label="Toggle sidebar">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16" stroke-linecap="round"/></svg>
+        </button>
+
+        <button class="icon-btn mobile-menu-toggle" (click)="toggleMobileSidebar()" [attr.aria-label]="mobileSidebarOpen() ? 'Close navigation menu' : 'Open navigation menu'" [attr.aria-expanded]="mobileSidebarOpen()">
+          <svg *ngIf="!mobileSidebarOpen()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg>
+          <svg *ngIf="mobileSidebarOpen()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m6 6 12 12M18 6 6 18" stroke-linecap="round"/></svg>
         </button>
 
         <div class="search">
@@ -119,7 +123,9 @@
 
     <!-- ============ PAGE CONTENT ============ -->
     <main class="content">
-      <router-outlet></router-outlet>
+      <router-outlet>
+
+      </router-outlet>
     </main>
   </div>
 </div>

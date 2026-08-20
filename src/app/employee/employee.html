@@ -1,1 +1,72 @@
-<p>employee works!</p>
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Employees</h1>
+      <p>Manage laboratory employees</p>
+    </div>
+
+    <button class="add-button">+ Add Employee</button>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="error">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  @if (!loading() && !errorMessage()) {
+    @if (employees().length === 0) {
+      <div class="state">No employees found.</div>
+    } @else {
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Employee Code</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Department</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (employee of employees(); track employee.employeeId) {
+              <tr>
+                <td>
+                  <strong>
+                    {{ employee.employeeCode }}
+                  </strong>
+                </td>
+
+                <td>
+                  {{ employee.name }}
+                </td>
+
+                <td>
+                  {{ employee.email }}
+                </td>
+
+                <td>
+                  {{ employee.department || '-' }}
+                </td>
+
+                <td>
+                  @if (employee.isActive) {
+                    <span class="status active"> Active </span>
+                  } @else {
+                    <span class="status inactive"> Inactive </span>
+                  }
+                </td>
+                <td>
+                  <button class="btn btn-primary">Update</button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+</div>

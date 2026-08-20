@@ -21,6 +21,11 @@
   --text: #191C24;
   --text-muted: #6B7180;
   --text-faint: #9AA0AE;
+  --success-bg: #DCFCE7;
+  --success-text: #166534;
+  --danger-bg: #FEE2E2;
+  --danger-text: #991B1B;
+  --danger-border: #FECACA;
 
   --sidebar-bg: #12141C;
   --sidebar-bg-elevated: #1A1D28;
@@ -52,6 +57,11 @@
   --text: #EAECF2;
   --text-muted: #9AA0AE;
   --text-faint: #6B7180;
+  --success-bg: rgba(34, 197, 94, 0.16);
+  --success-text: #86EFAC;
+  --danger-bg: rgba(239, 68, 68, 0.16);
+  --danger-text: #FCA5A5;
+  --danger-border: rgba(239, 68, 68, 0.35);
 
   --sidebar-bg: #0A0B10;
   --sidebar-bg-elevated: #12141C;
@@ -77,6 +87,7 @@ svg {
 
 .hide-mobile { display: flex; }
 .hide-desktop { display: none; }
+.mobile-menu-toggle { display: none !important; }
 
 /* ==========================================================================
    Shell layout
@@ -529,7 +540,7 @@ svg {
 .content {
   flex: 1;
   overflow-y: auto;
-  padding: 28px;
+  padding: 22px;
 }
 
 /* ==========================================================================
@@ -539,6 +550,8 @@ svg {
 @media (max-width: 900px) {
   .hide-mobile { display: none !important; }
   .hide-desktop { display: flex !important; }
+  .desktop-sidebar-toggle { display: none; }
+  .mobile-menu-toggle { display: flex !important; }
 
   .sidebar {
     position: fixed;
@@ -564,10 +577,11 @@ svg {
   }
 
   .search { max-width: 220px; }
-  .content { padding: 18px; }
+  .content { padding: 16px; }
 }
 
 @media (max-width: 560px) {
   .search { display: none; }
-  .topbar { padding: 0 14px; gap: 8px; }
+  .topbar { padding: 0 10px; gap: 6px; }
+  .content { padding: 10px; }
 }

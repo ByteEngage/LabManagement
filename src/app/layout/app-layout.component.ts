@@ -7,14 +7,21 @@ import {
   OnInit,
   ElementRef,
   inject,
+  PLATFORM_ID,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
-import { isPlatformBrowser } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+
+import {
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet
+} from '@angular/router';
+
 interface NavItem {
   label: string;
-  icon: string; // key into the ICONS map used in the template
+  icon: string;
   route: string;
   badge?: string;
 }
@@ -27,27 +34,34 @@ interface NavSection {
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [
+    CommonModule,
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet
+  ],
   templateUrl: './app-layout.component.html',
   styleUrls: ['./app-layout.component.scss'],
 })
-
 export class AppShellComponent implements OnInit {
+
   private host = inject(ElementRef<HTMLElement>);
   private router = inject(Router);
+  private platformId = inject(PLATFORM_ID);
 
-  /** Whether the sidebar is collapsed to icon-only rail mode */
   sidebarCollapsed = signal(false);
-  /** Mobile off-canvas open state (separate from desktop collapse) */
+
   mobileSidebarOpen = signal(false);
-  /** Dark / light theme */
+
   darkMode = signal(false);
-  /** Native fullscreen state */
+
   isFullscreen = signal(false);
-  /** User menu dropdown */
+
   userMenuOpen = signal(false);
 
-  sidebarWidth = computed(() => (this.sidebarCollapsed() ? '76px' : '264px'));
+  sidebarWidth = computed(() =>
+    this.sidebarCollapsed() ? '76px' : '264px'
+  );
 
   currentUser = {
     name: 'Harshit Pandey',
@@ -60,99 +74,238 @@ export class AppShellComponent implements OnInit {
     {
       title: 'Workspace',
       items: [
-        { label: 'Dashboard', icon: 'grid', route: '/dashboard' },
-        { label: 'Employees', icon: 'bar-chart', route: '/employees' },
-        { label: 'Projects', icon: 'folder', route: '/projects', badge: '12' },
+        {
+          label: 'Dashboard',
+          icon: 'grid',
+          route: '/dashboard'
+        },
+        {
+          label: 'Employee',
+          icon: 'bar-chart',
+          route: '/employees',
+          badge: '10'
+        },
+        {
+          label: 'Departments',
+          icon: 'folder',
+          route: '/departments',
+          badge: '4'
+        },
       ],
     },
+
     {
       title: 'Collaborate',
       items: [
-        { label: 'Team', icon: 'users', route: '/team' },
-        { label: 'Messages', icon: 'message', route: '/messages', badge: '3' },
-        { label: 'Reports', icon: 'file', route: '/reports' },
+        {
+          label: 'Team',
+          icon: 'users',
+          route: '/team'
+        },
+        {
+          label: 'Messages',
+          icon: 'message',
+          route: '/messages',
+          badge: '3'
+        },
+        {
+          label: 'Reports',
+          icon: 'file',
+          route: '/report'
+        },
       ],
     },
+
     {
       title: 'System',
-      items: [{ label: 'Settings', icon: 'settings', route: '/settings' }],
+      items: [
+        {
+          label: 'Settings',
+          icon: 'settings',
+          route: '/settings'
+        }
+      ],
     },
   ];
 
-  activeRoute = signal('/dashboard');
-
   ngOnInit(): void {
-    const savedTheme = localStorage.getItem('app-theme');
+
+    // Browser-only code
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    const savedTheme =
+      localStorage.getItem('app-theme');
+
     const prefersDark =
       window.matchMedia &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches;
-    this.darkMode.set(savedTheme ? savedTheme === 'dark' : prefersDark);
+      window.matchMedia(
+        '(prefers-color-scheme: dark)'
+      ).matches;
 
-    const savedCollapsed = localStorage.getItem('app-sidebar-collapsed');
-    if (savedCollapsed) this.sidebarCollapsed.set(savedCollapsed === 'true');
+    this.darkMode.set(
+      savedTheme
+        ? savedTheme === 'dark'
+        : prefersDark
+    );
+
+
+    const savedCollapsed =
+      localStorage.getItem(
+        'app-sidebar-collapsed'
+      );
+
+    if (savedCollapsed !== null) {
+
+      this.sidebarCollapsed.set(
+        savedCollapsed === 'true'
+      );
+
+    }
+
   }
+
 
   @HostBinding('attr.data-theme')
   get themeAttr(): string {
-    return this.darkMode() ? 'dark' : 'light';
+
+    return this.darkMode()
+      ? 'dark'
+      : 'light';
+
   }
+
 
   @HostListener('document:fullscreenchange')
   onFullscreenChange(): void {
-    this.isFullscreen.set(!!document.fullscreenElement);
+
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
+    this.isFullscreen.set(
+      !!document.fullscreenElement
+    );
+
   }
+
 
   @HostListener('document:keydown.escape')
   onEscape(): void {
+
     this.userMenuOpen.set(false);
+
+    this.closeMobileSidebar();
+
   }
+
 
   toggleSidebar(): void {
-    this.sidebarCollapsed.update((v) => !v);
-    localStorage.setItem(
-      'app-sidebar-collapsed',
-      String(this.sidebarCollapsed())
+
+    this.sidebarCollapsed.update(
+      value => !value
     );
+
+    if (isPlatformBrowser(this.platformId)) {
+
+      localStorage.setItem(
+        'app-sidebar-collapsed',
+        String(this.sidebarCollapsed())
+      );
+
+    }
+
   }
+
 
   toggleMobileSidebar(): void {
-    this.mobileSidebarOpen.update((v) => !v);
+
+    this.mobileSidebarOpen.update(
+      value => !value
+    );
+
   }
+
 
   closeMobileSidebar(): void {
+
     this.mobileSidebarOpen.set(false);
+
   }
+
 
   toggleTheme(): void {
-    this.darkMode.update((v) => !v);
-    localStorage.setItem('app-theme', this.darkMode() ? 'dark' : 'light');
+
+    this.darkMode.update(
+      value => !value
+    );
+
+    if (isPlatformBrowser(this.platformId)) {
+
+      localStorage.setItem(
+        'app-theme',
+        this.darkMode()
+          ? 'dark'
+          : 'light'
+      );
+
+    }
+
   }
+
 
   toggleFullscreen(): void {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen?.();
-    } else {
-      document.exitFullscreen?.();
+
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
     }
+
+    if (!document.fullscreenElement) {
+
+      document.documentElement
+        .requestFullscreen?.();
+
+    } else {
+
+      document.exitFullscreen?.();
+
+    }
+
   }
+
 
   toggleUserMenu(): void {
-    this.userMenuOpen.update((v) => !v);
+
+    this.userMenuOpen.update(
+      value => !value
+    );
+
   }
 
-  setActive(route: string): void {
-    this.activeRoute.set(route);
-    this.router.navigateByUrl(route);
+
+  onNavClick(): void {
+
     this.closeMobileSidebar();
+
   }
+
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.user-menu') && this.userMenuOpen()) {
-      this.userMenuOpen.set(false);
-    }
-  }
-  
-}
 
+    const target =
+      event.target as HTMLElement;
+
+    if (
+      !target.closest('.user-menu') &&
+      this.userMenuOpen()
+    ) {
+
+      this.userMenuOpen.set(false);
+
+    }
+
+  }
+
+}
