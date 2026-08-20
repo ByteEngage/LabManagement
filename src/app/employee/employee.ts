@@ -1,4 +1,5 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 import {
   Employee,
@@ -13,6 +14,8 @@ import {
 })
 export class EmployeeComponent implements OnInit {
 
+  private platformId = inject(PLATFORM_ID);
+
   employees = signal<Employee[]>([]);
 
   loading = signal(false);
@@ -24,7 +27,9 @@ export class EmployeeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadEmployees();
+    if (isPlatformBrowser(this.platformId)) {
+      this.loadEmployees();
+    }
   }
 
   loadEmployees(): void {
